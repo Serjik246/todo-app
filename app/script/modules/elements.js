@@ -1,0 +1,1 @@
+export const appContainer = document.querySelector('.app-container');
