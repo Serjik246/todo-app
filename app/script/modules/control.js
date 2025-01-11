@@ -1,12 +1,12 @@
 import {createRow} from './createElements.js';
-import {getStorage, setStorage, removeStorage, updateStorage} from './serviceStorage.js';
+import {
+  getStorage, 
+  setStorage, 
+  removeStorage, 
+  updateStorage} from './serviceStorage.js';
 
 export const authorization = () => {
   return prompt('Назовите свое имя', String());
-};
-
-const addTask = (list, task, number) => {
-  list.append(createRow(task, number));
 };
 
 const removeTask = (list, elem ) => {
@@ -18,21 +18,46 @@ const removeTask = (list, elem ) => {
 };
 
 export const formControl = (form, list, data) => {
-  form.addEventListener('submit', e => {
+  const input = form.querySelector('.form-control');
+  const button = form.querySelector('.btn-primary');
+  input.addEventListener('input', () => {
+    if (input.value.trim() !== '') {
+      button.removeAttribute('disabled');
+    } else {
+      button.setAttribute('disabled', true); 
+    }
+  });
+  
+  const clearForm = () => {
+    form.reset();
+    button.setAttribute('disabled', true);
+  };
+
+  const addTask = (e) => {
     e.preventDefault();
-    const target = e.target;
+    const target = e.target.closest('form');
     const formData = new FormData(target);
     const newTask = Object.fromEntries(formData);
     newTask.id = Math.random().toString().substring(2, 10);
     newTask.status = 'work';
     
     setStorage(data, newTask);
-    addTask(list, newTask, getStorage(data).length);
-    form.reset();
+    list.append(createRow(newTask, getStorage(data).length));
+    clearForm();
+  };
+
+  button.addEventListener('click', e => {
+    addTask(e);
+  });
+
+  input.addEventListener('keypress', e => {
+    if (e.key === 'Enter') {
+      addTask(e);
+    };
   });
 
   form.addEventListener('reset', () => {
-    form.reset();
+    clearForm();
   });
 };
 
@@ -47,7 +72,7 @@ export const actionButtons = (list, data) => {
       const id = tr.getAttribute('id');
       updateStorage(id, data);
     };
-    if (target.closest('.btn-danger')){
+    if (target.closest('.btn-danger')) {
       if (confirm('Вы уверены?')) {
         const tr = target.closest('tr');
         const id = tr.getAttribute('id');

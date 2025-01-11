@@ -21,12 +21,11 @@ const createForm = () => {
   input.setAttribute('name', 'task');
   input.classList.add('form-control');
   input.setAttribute('placeholder', 'ввести задачу');
-  input.setAttribute('required', '');
-
+  
   label.append(input);
   form.append(label);
   form.insertAdjacentHTML('beforeend', `
-    <button type="submit" class="btn btn-primary me-3">
+    <button type="submit" class="btn btn-primary me-3" disabled>
         Сохранить
       </button>
     <button type="reset" class="btn btn-warning">
